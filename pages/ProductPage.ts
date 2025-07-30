@@ -11,7 +11,6 @@ export default class ProductPage {
     this.productPageBody = page.locator(".page-body");
   }
 
-
   public async selectProductByName(name: string): Promise<void> {
     await this.page.getByRole('link', {
       name: name,
@@ -19,24 +18,34 @@ export default class ProductPage {
     }).click();
   }
 
+  public async selectProductByHref(href: string): Promise<void> {
+    await this.productPageBody.locator(`h2.product-title a[href="${href}"]`).click();
+  }
+
   public async checkProductPageTitle(title: string): Promise<void> {
     await expect(this.pageTitle).toHaveText(title);
   }
 
-  public getSubCategoryOfProductPage(name: string): Locator {
-    return this.productPageBody.locator(".sub-category-item h2 a", {
-      hasText: name,
-    });
+  public getSubCategoryOfProductPage(href: string): Locator {
+    return this.productPageBody.locator(`.sub-category-item h2 a[href="${href}"]`);
   }
 
-  public async selectSubCategory(name: string): Promise<void> {
-    await this.getSubCategoryOfProductPage(name).click();
+  public async selectSubCategoryByHref(href: string): Promise<void> {
+    await this.getSubCategoryOfProductPage(href).click();
   }
 
   public getProductName(name: string): Locator {
     return this.page.locator(".product-name h1", {
       hasText: name,
     });
+  }
+
+  public getInputQuantity(): Locator {
+    return this.page.locator("input.qty-input");
+  }
+
+  public async fillInputQuantity(value: string): Promise<void> {
+    await this.getInputQuantity().fill(value);
   }
 
   public async verifyProductNameIsCorrectAfterSelection(name: string): Promise<void> {

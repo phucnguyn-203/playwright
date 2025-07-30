@@ -19,11 +19,19 @@ export default class Category {
         });
     }
 
-    async selectMainCategoryItem(name: string): Promise<void> {
-        return this.getMainCategoryItem(name).click();
+    public getMainCategoryItemByHref(href: string): Locator {
+        return this.page.locator(`.block-category-navigation ul.list > li > a[href="${href}"]`);
     }
 
-    async selectSubCategoryItem(name: string): Promise<void> {
-        return this.getSubCategoryItem(name).click();
+    public async selectMainCategoryItemByHref(href: string): Promise<void> {
+        await this.getMainCategoryItemByHref(href).click();
+    }
+
+    public async selectMainCategoryItem(name: string): Promise<void> {
+        await this.getMainCategoryItem(name).click();
+    }
+
+    public async selectSubCategoryItem(name: string): Promise<void> {
+        await this.getSubCategoryItem(name).click();
     }
 }

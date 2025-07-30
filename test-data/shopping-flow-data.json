@@ -1,0 +1,16 @@
+{
+  "mainCategory": {
+    "title": "Computers",
+    "href": "/computers"
+  },
+  "subCategory": {
+    "title": "Desktops",
+    "href": "/desktops"
+  },
+  "product": {
+    "name": "Build your own expensive computer",
+    "href": "/build-your-own-expensive-computer-2",
+    "unitPrice": "1815.00",
+    "quantity": "2"
+  }
+}

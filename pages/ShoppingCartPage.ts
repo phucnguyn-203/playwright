@@ -14,7 +14,7 @@ export default class ShoppingCartPage {
     return this.cartRows.filter({ has: this.page.locator('.product-name', { hasText: productName }) });
   }
 
-  public async verifyProductInCart(productName: string): Promise<void> {
+  public async verifyProductIsAdded(productName: string): Promise<void> {
     const productLocator = this.getRowByProductName(productName);
     await expect(productLocator).toBeVisible();
   }
@@ -46,12 +46,23 @@ export default class ShoppingCartPage {
     return this.page.locator('#termsofservice');
   }
 
-  public async acceptTermsOfService(): Promise<void> {
+  public async checkTermsOfServiceCheckBox(): Promise<void> {
     await this.getTermsOfServiceCheckbox().check();
   }
 
-  public async proceedToCheckout(): Promise<void> {
-    await this.acceptTermsOfService();
-    await this.clickCheckoutButton();
+  public async verifyProductDetails({
+    productName,
+    expectedQuantity,
+    expectedUnitPrice,
+    expectedTotalPrice,
+  }: {
+    productName: string;
+    expectedQuantity: string;
+    expectedUnitPrice: string;
+    expectedTotalPrice: string;
+  }): Promise<void> {
+    await this.verifyProductQuantity(productName, expectedQuantity);
+    await this.verifyProductUnitPrice(productName, expectedUnitPrice);
+    await this.verifyProductTotalPrice(productName, expectedTotalPrice);
   }
 }
