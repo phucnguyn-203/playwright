@@ -22,7 +22,7 @@ export default class CheckoutPage {
     return this.page.locator('#billing-buttons-container input[type="button"]');
   }
 
-  public async clickBillingContinueButton(): Promise<void> {
+  public async clickContinueButtonOfBillingAddress(): Promise<void> {
     await this.getBillingContinueButton().click();
   }
 
@@ -37,12 +37,12 @@ export default class CheckoutPage {
     }
   }
 
-  public getShippingAddressContinueButton(): Locator {
+  public getContinueButtonOfShippingAddress(): Locator {
     return this.page.locator('#shipping-buttons-container input[type="button"]');
   }
 
-  public async clickShippingAddressContinueButton(): Promise<void> {
-    await this.getShippingAddressContinueButton().click();
+  public async clickContinueButtonOfShippingAddress(): Promise<void> {
+    await this.getContinueButtonOfShippingAddress().click();
   }
 
   public getPaymentMethodRadioButtonById(id: string): Locator {
@@ -53,11 +53,34 @@ export default class CheckoutPage {
     await this.getPaymentMethodRadioButtonById(id).check();
   }
 
-  public getPaymentContinueButton(): Locator {
+  public getContinueButtonOfPaymentMethod(): Locator {
     return this.page.locator('#payment-method-buttons-container input[type="button"]');
   }
 
-  public async clickPaymentContinueButton(): Promise<void> {
-    await this.getPaymentContinueButton().click();
+  public async clickContinueButtonOfPaymentMethod(): Promise<void> {
+    await this.getContinueButtonOfPaymentMethod().click();
+  }
+
+  public getContinueButtonOfPaymentInfo(): Locator {
+    return this.page.locator('#payment-info-buttons-container input[type="button"]');
+  }
+
+  public async clickContinueButtonOfPaymentInfo(): Promise<void> {
+    await this.getContinueButtonOfPaymentInfo().click();
+  }
+
+  public getConfirmOrderButton(): Locator {
+    return this.page.locator('#confirm-order-buttons-container input[type="button"]');
+  }
+
+  public async clickConfirmOrderButton(): Promise<void> {
+    await this.getConfirmOrderButton().click();
+  }
+
+
+  public async checkOrderSuccessMessageIsVisible(): Promise<void> {
+    const successMessage = this.page.locator('.order-completed');
+    await expect(successMessage).toBeVisible();
+    await expect(successMessage).toContainText('Your order has been successfully processed!');
   }
 }

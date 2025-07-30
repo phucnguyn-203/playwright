@@ -33,10 +33,10 @@ test.beforeEach(async ({ page }) => {
     await loginPage.isLoginSuccessfully(username);
 });
 
-// test.afterEach(async ({ page }) => {
-//     await header.clickLogoutLink();
-//     await page.close();
-// });
+test.afterEach(async ({ page }) => {
+    await header.clickLogoutLink();
+    await page.close();
+});
 
 test("Shopping Flow Tests", async () => {
     // Read product data from file
@@ -80,14 +80,20 @@ test("Shopping Flow Tests", async () => {
     // Select billing address and continue
     await checkoutPage.selectBillingAddressByValue("4376084");
     await checkoutPage.verifyBillingAddressSelected("4376084");
-    await checkoutPage.clickBillingContinueButton();
+    await checkoutPage.clickContinueButtonOfBillingAddress();
 
     // Select pickup in store option in shipping address
     await checkoutPage.selectPickUpInStore();
-    await checkoutPage.clickShippingAddressContinueButton();
+    await checkoutPage.clickContinueButtonOfShippingAddress();
 
 
     // Select payment method and continue
     await checkoutPage.selectPaymentMethodById("paymentmethod_1");
-    await checkoutPage.clickPaymentContinueButton();
+    await checkoutPage.clickContinueButtonOfPaymentMethod();
+
+    // Click continue on payment info and confirm order
+    await checkoutPage.clickContinueButtonOfPaymentInfo();
+    await checkoutPage.clickConfirmOrderButton();
+    // Verify order success message
+    await checkoutPage.checkOrderSuccessMessageIsVisible();
 });
