@@ -24,5 +24,4 @@ export default class Dialog {
   public async closeDialog(): Promise<void> {
     await this.getDialogCloseButton().click();
   }
-
 }

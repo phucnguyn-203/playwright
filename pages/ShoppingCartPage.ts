@@ -17,6 +17,7 @@ export default class ShoppingCartPage {
   public async verifyProductIsAdded(productName: string): Promise<void> {
     const productLocator = this.getRowByProductName(productName);
     await expect(productLocator).toBeVisible();
+
   }
 
   public async verifyProductQuantity(productName: string, expectedQty: string): Promise<void> {
@@ -38,7 +39,7 @@ export default class ShoppingCartPage {
     return this.page.locator('#checkout');
   }
 
-  public async clickCheckoutButton(): Promise<void> {
+  public async clickCheckout(): Promise<void> {
     await this.getCheckoutButton().click();
   }
 

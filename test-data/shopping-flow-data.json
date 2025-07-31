@@ -11,6 +11,10 @@
     "name": "Build your own expensive computer",
     "href": "/build-your-own-expensive-computer-2",
     "unitPrice": "1815.00",
-    "quantity": "2"
-  }
+    "quantity": "2",
+    "totalPrice": "3630.00"
+  },
+  "shippingAddress": "Phuc Nguyen, 123, Juneau, Alaska 123, United States",
+  "paymentMethod": "paymentmethod_1",
+  "orderTotal": "3635.00"
 }

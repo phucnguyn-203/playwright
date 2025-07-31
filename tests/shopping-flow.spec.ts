@@ -6,8 +6,8 @@ import Category from "../components/Category";
 import ProductPage from "../pages/ProductPage";
 import ShoppingCartPage from "../pages/ShoppingCartPage";
 import Dialog from "../components/Dialog";
-import { readJsonFileAsync } from "../utils/fileReader";
 import CheckoutPage from "../pages/CheckoutPage";
+import { readJsonFileAsync } from "../utils/fileReader";
 
 let header: Header;
 let loginPage: LoginPage;
@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
     // Read credentials from file
     const { username, password } = await readJsonFileAsync("test-data/credentials.json");
     await loginPage.login(username, password);
-    await loginPage.isLoginSuccessfully(username);
+    await loginPage.verifyLoginSuccess(username);
 });
 
 test.afterEach(async ({ page }) => {
@@ -38,9 +38,9 @@ test.afterEach(async ({ page }) => {
     await page.close();
 });
 
-test("Shopping Flow Tests", async () => {
+test("should complete the shopping flow successfully", async () => {
     // Read product data from file
-    const { mainCategory, subCategory, product } = await readJsonFileAsync("test-data/shopping-flow-data.json");
+    const { mainCategory, subCategory, product, shippingAddress, paymentMethod, orderTotal } = await readJsonFileAsync("test-data/shopping-flow-data.json");
 
     // Navigate to Computers category and select Desktop subcategory
     await category.selectMainCategoryItemByHref(mainCategory.href);
@@ -53,8 +53,8 @@ test("Shopping Flow Tests", async () => {
     await productPage.verifyProductNameIsCorrectAfterSelection(product.name);
 
     // Add product to cart and verify
-    await productPage.fillInputQuantity(product.quantity);
-    await productPage.clickAddToCartButton();
+    await productPage.fillQuantity(product.quantity);
+    await productPage.clickAddToCart();
     await productPage.verifyNotificationSuccessPresentAfterClickOnAddToCart();
 
     // Navigate to shopping cart and verify product details
@@ -64,22 +64,22 @@ test("Shopping Flow Tests", async () => {
         productName: product.name,
         expectedQuantity: product.quantity,
         expectedUnitPrice: product.unitPrice,
-        expectedTotalPrice: `${(product.quantity * product.unitPrice).toFixed(2)}`,
+        expectedTotalPrice: product.totalPrice,
     });
 
     // Proceed to checkout without accepting terms of service
-    await shoppingCartPage.clickCheckoutButton();
+    await shoppingCartPage.clickCheckout();
     await dialog.verifyDialogIsVisible();
     await dialog.checkDialogTitle("Terms of service");
 
     // Close the dialog and accept terms of service
     await dialog.closeDialog();
     await shoppingCartPage.checkTermsOfServiceCheckBox();
-    await shoppingCartPage.clickCheckoutButton();
+    await shoppingCartPage.clickCheckout();
 
     // Select billing address and continue
-    await checkoutPage.selectBillingAddressByValue("4376084");
-    await checkoutPage.verifyBillingAddressSelected("4376084");
+    await checkoutPage.selectBillingAddressByLabel(shippingAddress);
+    await checkoutPage.verifyBillingAddressValueIsSelected(shippingAddress);
     await checkoutPage.clickContinueButtonOfBillingAddress();
 
     // Select pickup in store option in shipping address
@@ -88,12 +88,15 @@ test("Shopping Flow Tests", async () => {
 
 
     // Select payment method and continue
-    await checkoutPage.selectPaymentMethodById("paymentmethod_1");
+    await checkoutPage.selectPaymentMethodById(paymentMethod);
     await checkoutPage.clickContinueButtonOfPaymentMethod();
 
-    // Click continue on payment info and confirm order
+    // Click continue on payment info
     await checkoutPage.clickContinueButtonOfPaymentInfo();
+    // Verify order total and confirm order
+    await checkoutPage.verifyOrderTotalIsCorrect(orderTotal);
     await checkoutPage.clickConfirmOrderButton();
+
     // Verify order success message
-    await checkoutPage.checkOrderSuccessMessageIsVisible();
+    await checkoutPage.checkOrderSuccessMessageIsVisible("Your order has been successfully processed!");
 });

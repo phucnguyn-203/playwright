@@ -1,29 +1,26 @@
 import { Locator, Page, expect } from "@playwright/test";
-
+import ButtonContainer from "../infrastructure/control/ButtonContainer";
 export default class CheckoutPage {
   private readonly page: Page;
+  private readonly buttonContainer: ButtonContainer;
 
   constructor(page: Page) {
     this.page = page;
+    this.buttonContainer = new ButtonContainer(page);
   }
 
-  public async selectBillingAddressByValue(value: string): Promise<void> {
-    await this.page.selectOption('#billing-address-select', value);
+  public async selectBillingAddressByLabel(label: string): Promise<void> {
+    await this.page.selectOption('#billing-address-select', { label });
   }
 
-  public async verifyBillingAddressSelected(value: string): Promise<void> {
-    const selectedAddress = await this.page.$eval('#billing-address-select', (select) => {
-      return (select as HTMLSelectElement).value;
-    });
-    await expect(selectedAddress).toBe(value);
+  public async verifyBillingAddressValueIsSelected(label: string): Promise<void> {
+    const selectedOption = this.page.locator('#billing-address-select option:checked');
+    await expect(selectedOption).toHaveText(label);
   }
 
-  public getBillingContinueButton(): Locator {
-    return this.page.locator('#billing-buttons-container input[type="button"]');
-  }
 
   public async clickContinueButtonOfBillingAddress(): Promise<void> {
-    await this.getBillingContinueButton().click();
+    await this.buttonContainer.getContinueButtonById('billing').click();
   }
 
   public getPickupInStoreCheckbox(): Locator {
@@ -37,12 +34,8 @@ export default class CheckoutPage {
     }
   }
 
-  public getContinueButtonOfShippingAddress(): Locator {
-    return this.page.locator('#shipping-buttons-container input[type="button"]');
-  }
-
   public async clickContinueButtonOfShippingAddress(): Promise<void> {
-    await this.getContinueButtonOfShippingAddress().click();
+    await this.buttonContainer.getContinueButtonById('shipping').click();
   }
 
   public getPaymentMethodRadioButtonById(id: string): Locator {
@@ -53,34 +46,28 @@ export default class CheckoutPage {
     await this.getPaymentMethodRadioButtonById(id).check();
   }
 
-  public getContinueButtonOfPaymentMethod(): Locator {
-    return this.page.locator('#payment-method-buttons-container input[type="button"]');
-  }
 
   public async clickContinueButtonOfPaymentMethod(): Promise<void> {
-    await this.getContinueButtonOfPaymentMethod().click();
-  }
-
-  public getContinueButtonOfPaymentInfo(): Locator {
-    return this.page.locator('#payment-info-buttons-container input[type="button"]');
+    await this.buttonContainer.getContinueButtonById('payment-method').click();
   }
 
   public async clickContinueButtonOfPaymentInfo(): Promise<void> {
-    await this.getContinueButtonOfPaymentInfo().click();
+    return this.buttonContainer.getContinueButtonById('payment-info').click();
   }
 
-  public getConfirmOrderButton(): Locator {
-    return this.page.locator('#confirm-order-buttons-container input[type="button"]');
+  public async verifyOrderTotalIsCorrect(expectedTotal: string): Promise<void> {
+    const orderTotalLocator = this.page.locator('.order-total');
+    await expect(orderTotalLocator).toHaveText(expectedTotal);
   }
 
   public async clickConfirmOrderButton(): Promise<void> {
-    await this.getConfirmOrderButton().click();
+    await this.buttonContainer.getContinueButtonById('confirm-order').click();
   }
 
 
-  public async checkOrderSuccessMessageIsVisible(): Promise<void> {
+  public async checkOrderSuccessMessageIsVisible(message: string): Promise<void> {
     const successMessage = this.page.locator('.order-completed');
     await expect(successMessage).toBeVisible();
-    await expect(successMessage).toContainText('Your order has been successfully processed!');
+    await expect(successMessage).toContainText(message);
   }
 }

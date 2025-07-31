@@ -1,12 +1,12 @@
 import { Locator, Page, expect } from "@playwright/test";
 import Header from "../components/Header";
-
+import InputElement from "../infrastructure/control/InputElement";
 
 export default class LoginPage {
     private readonly page: Page
-    private readonly usernameInput: Locator;
-    private readonly passwordInput: Locator;
-    private readonly rememberMeCheckbox: Locator;
+    private readonly usernameInput: InputElement;
+    private readonly passwordInput: InputElement;
+    private readonly rememberMeCheckbox: InputElement;
     private readonly loginButton: Locator;
 
     private readonly header: Header;
@@ -14,9 +14,9 @@ export default class LoginPage {
     public constructor(page: Page) {
         this.page = page;
         this.header = new Header(page);
-        this.usernameInput = page.locator('input[name="Email"]');
-        this.passwordInput = page.locator('input[name="Password"]');
-        this.rememberMeCheckbox = page.locator('input[id="RememberMe"]');
+        this.usernameInput = InputElement.fromName(page, "Email");
+        this.passwordInput = InputElement.fromName(page, "Password");
+        this.rememberMeCheckbox = InputElement.fromId(page, "RememberMe");
         this.loginButton = page.locator('input[type="submit"].login-button');
     }
 
@@ -31,7 +31,7 @@ export default class LoginPage {
         await this.loginButton.click();
     }
 
-    public async isLoginSuccessfully(username: string): Promise<void> {
+    public async verifyLoginSuccess(username: string): Promise<void> {
         await this.header.isAccountLinkVisible();
         await expect(this.header.getAccountLink()).toHaveText(username);
     }

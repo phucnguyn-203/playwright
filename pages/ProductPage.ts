@@ -40,19 +40,19 @@ export default class ProductPage {
     });
   }
 
-  public getInputQuantity(): Locator {
+  public getQuantityInput(): Locator {
     return this.page.locator("input.qty-input");
   }
 
-  public async fillInputQuantity(value: string): Promise<void> {
-    await this.getInputQuantity().fill(value);
+  public async fillQuantity(value: string): Promise<void> {
+    await this.getQuantityInput().fill(value);
   }
 
   public async verifyProductNameIsCorrectAfterSelection(name: string): Promise<void> {
     await expect(this.getProductName(name)).toHaveText(name);
   }
 
-  public async clickAddToCartButton(): Promise<void> {
+  public async clickAddToCart(): Promise<void> {
     await this.page.locator(".add-to-cart-button").click();
   }
 
