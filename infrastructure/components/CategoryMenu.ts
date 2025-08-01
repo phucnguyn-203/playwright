@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
-export default class Category {
+export default class CategoryMenu {
     private page: Page;
 
     constructor(page: Page) {

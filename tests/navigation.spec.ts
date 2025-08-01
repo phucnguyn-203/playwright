@@ -1,16 +1,16 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 
-import Navigation from "../components/Navigation";
+import { HeaderMenu } from "../infrastructure";
 import ProductPage from "../pages/ProductPage";
 
 test.describe("Navigation Tests", () => {
-  let navigation: Navigation;
+  let headerMenu: HeaderMenu;
   let productPage: ProductPage;
 
 
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    navigation = new Navigation(page);
+    headerMenu = new HeaderMenu(page);
     productPage = new ProductPage(page);
   });
 
@@ -21,7 +21,7 @@ test.describe("Navigation Tests", () => {
   test('should navigate to the product page when clicking on the product link', async () => {
     const navigationItems = ["Books", "Computers", "Electronics", "Apparel & Shoes", "Digital downloads", "Jewelry", "Gift Cards"];
     for (const item of navigationItems) {
-      await navigation.clickMainItem(item);
+      await headerMenu.clickMainItem(item);
       await productPage.checkProductPageTitle(item);
     }
   });
@@ -33,7 +33,7 @@ test.describe("Navigation Tests", () => {
       { item: "Electronics", subItems: ["Camera, photo", "Cell phones"] },
     ];
     for (const { item, subItems } of testData) {
-      await navigation.verifyListItemsOfSublistVisibleAndPageTitleAfterClickOnSublistItem(item, subItems);
+      await headerMenu.verifyListItemsOfSublistVisibleAndPageTitleAfterClickOnSublistItem(item, subItems);
     }
   });
 });

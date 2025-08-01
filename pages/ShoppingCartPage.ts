@@ -1,13 +1,16 @@
 // ShoppingCartPage.ts
 import { Page, Locator, expect } from '@playwright/test';
+import { Input } from '../infrastructure';
 
 export default class ShoppingCartPage {
   private page: Page;
   private cartRows: Locator;
+  private termsOfServiceCheckbox: Input;
 
   constructor(page: Page) {
     this.page = page;
     this.cartRows = page.locator('table.cart tbody tr.cart-item-row');
+    this.termsOfServiceCheckbox = Input.fromId(page, 'termsofservice');
   }
 
   public getRowByProductName(productName: string): Locator {
@@ -43,12 +46,8 @@ export default class ShoppingCartPage {
     await this.getCheckoutButton().click();
   }
 
-  public getTermsOfServiceCheckbox(): Locator {
-    return this.page.locator('#termsofservice');
-  }
-
   public async checkTermsOfServiceCheckBox(): Promise<void> {
-    await this.getTermsOfServiceCheckbox().check();
+    await this.termsOfServiceCheckbox.check();
   }
 
   public async verifyProductDetails({

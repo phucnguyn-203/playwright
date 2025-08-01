@@ -1,23 +1,22 @@
-import { Locator, Page, expect } from "@playwright/test";
-import Header from "../components/Header";
-import InputElement from "../infrastructure/control/InputElement";
+import { Page, expect } from "@playwright/test";
+import { Header, Input } from "../infrastructure";
 
 export default class LoginPage {
     private readonly page: Page
-    private readonly usernameInput: InputElement;
-    private readonly passwordInput: InputElement;
-    private readonly rememberMeCheckbox: InputElement;
-    private readonly loginButton: Locator;
+    private readonly usernameInput: Input;
+    private readonly passwordInput: Input;
+    private readonly rememberMeCheckbox: Input;
+    private readonly loginButton: Input;
 
     private readonly header: Header;
 
     public constructor(page: Page) {
         this.page = page;
         this.header = new Header(page);
-        this.usernameInput = InputElement.fromName(page, "Email");
-        this.passwordInput = InputElement.fromName(page, "Password");
-        this.rememberMeCheckbox = InputElement.fromId(page, "RememberMe");
-        this.loginButton = page.locator('input[type="submit"].login-button');
+        this.usernameInput = Input.fromId(page, "Email");
+        this.passwordInput = Input.fromId(page, "Password");
+        this.rememberMeCheckbox = Input.fromId(page, "RememberMe");
+        this.loginButton = Input.fromClass(page, "login-button");
     }
 
     public async goToLoginPage(): Promise<void> {

@@ -1,27 +1,22 @@
 import { test } from "@playwright/test";
 
-import Header from "../components/Header";
-import LoginPage from "../pages/LoginPage";
-import Category from "../components/Category";
-import ProductPage from "../pages/ProductPage";
-import ShoppingCartPage from "../pages/ShoppingCartPage";
-import Dialog from "../components/Dialog";
-import CheckoutPage from "../pages/CheckoutPage";
+import { Header, CategoryMenu, AlertPopup } from "../infrastructure";
+import { LoginPage, ProductPage, ShoppingCartPage, CheckoutPage } from "../pages";
 import { readJsonFileAsync } from "../utils/fileReader";
 
 let header: Header;
 let loginPage: LoginPage;
-let category: Category;
+let categoryMenu: CategoryMenu;
 let shoppingCartPage: ShoppingCartPage;
 let productPage: ProductPage;
-let dialog: Dialog;
+let alertPopup: AlertPopup;
 let checkoutPage: CheckoutPage;
 
 test.beforeEach(async ({ page }) => {
     header = new Header(page);
-    dialog = new Dialog(page);
+    alertPopup = new AlertPopup(page);
     loginPage = new LoginPage(page);
-    category = new Category(page);
+    categoryMenu = new CategoryMenu(page);
     productPage = new ProductPage(page);
     shoppingCartPage = new ShoppingCartPage(page);
     checkoutPage = new CheckoutPage(page);
@@ -43,7 +38,7 @@ test("should complete the shopping flow successfully", async () => {
     const { mainCategory, subCategory, product, shippingAddress, paymentMethod, orderTotal } = await readJsonFileAsync("test-data/shopping-flow-data.json");
 
     // Navigate to Computers category and select Desktop subcategory
-    await category.selectMainCategoryItemByHref(mainCategory.href);
+    await categoryMenu.selectMainCategoryItemByHref(mainCategory.href);
     await productPage.checkProductPageTitle(mainCategory.title);
 
     await productPage.selectSubCategoryByHref(subCategory.href);
@@ -69,11 +64,11 @@ test("should complete the shopping flow successfully", async () => {
 
     // Proceed to checkout without accepting terms of service
     await shoppingCartPage.clickCheckout();
-    await dialog.verifyDialogIsVisible();
-    await dialog.checkDialogTitle("Terms of service");
+    await alertPopup.verifyAlertPopupIsVisible();
+    await alertPopup.checkAlertPopupTitle("Terms of service");
 
-    // Close the dialog and accept terms of service
-    await dialog.closeDialog();
+    // Close the alert popup and accept terms of service
+    await alertPopup.closeAlertPopup();
     await shoppingCartPage.checkTermsOfServiceCheckBox();
     await shoppingCartPage.clickCheckout();
 

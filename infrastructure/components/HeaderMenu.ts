@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from "@playwright/test";
-import ProductPage from "../pages/ProductPage";
+import { ProductPage } from "../../pages";
 
-export default class Navigation {
+export default class HeaderMenu {
 
   private readonly page: Page;
   private readonly topMenu: Locator;

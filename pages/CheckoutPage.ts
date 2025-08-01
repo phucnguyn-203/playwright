@@ -1,37 +1,33 @@
 import { Locator, Page, expect } from "@playwright/test";
-import ButtonContainer from "../infrastructure/control/ButtonContainer";
+import { Select, ButtonContainer, Input } from "../infrastructure";
+
 export default class CheckoutPage {
   private readonly page: Page;
   private readonly buttonContainer: ButtonContainer;
+  private readonly pickupInStoreCheckbox: Input;
+  private readonly billingAddressSelect: Select;
 
   constructor(page: Page) {
     this.page = page;
     this.buttonContainer = new ButtonContainer(page);
+    this.pickupInStoreCheckbox = Input.fromId(page, 'PickUpInStore');
+    this.billingAddressSelect = Select.fromId(page, 'billing-address-select');
   }
 
   public async selectBillingAddressByLabel(label: string): Promise<void> {
-    await this.page.selectOption('#billing-address-select', { label });
+    await this.billingAddressSelect.selectOptionByLabel(label);
   }
 
   public async verifyBillingAddressValueIsSelected(label: string): Promise<void> {
-    const selectedOption = this.page.locator('#billing-address-select option:checked');
-    await expect(selectedOption).toHaveText(label);
+    await this.billingAddressSelect.verifyValueIsSelected(label);
   }
-
 
   public async clickContinueButtonOfBillingAddress(): Promise<void> {
     await this.buttonContainer.getContinueButtonById('billing').click();
   }
 
-  public getPickupInStoreCheckbox(): Locator {
-    return this.page.locator('#PickUpInStore');
-  }
-
   public async selectPickUpInStore() {
-    const isChecked = await this.getPickupInStoreCheckbox().isChecked();
-    if (!isChecked) {
-      await this.getPickupInStoreCheckbox().check();
-    }
+    await this.pickupInStoreCheckbox.check();
   }
 
   public async clickContinueButtonOfShippingAddress(): Promise<void> {
